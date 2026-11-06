@@ -1,0 +1,95 @@
+{
+  "name": "react-rich-text-toolkit",
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "lint": "eslint .",
+    "preview": "vite preview",
+    "build:lib": "vite build --config vite.lib.config.ts && tsc -p tsconfig.lib.json",
+    "prepack": "yarn build:lib",
+    "test": "node --test tests/*.test.mjs"
+  },
+  "dependencies": {
+    "@lexical/clipboard": "0.17.1",
+    "@lexical/code": "0.17.1",
+    "@lexical/html": "0.17.1",
+    "@lexical/link": "0.17.1",
+    "@lexical/list": "0.17.1",
+    "@lexical/react": "0.17.1",
+    "@lexical/rich-text": "0.17.1",
+    "@lexical/selection": "0.17.1",
+    "@lexical/table": "0.17.1",
+    "@lexical/utils": "0.17.1",
+    "@types/prismjs": "^1.26.6",
+    "lexical": "0.17.1",
+    "prismjs": "^1.27.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.9.0",
+    "@radix-ui/react-label": "^2.1.0",
+    "@radix-ui/react-separator": "^1.1.0",
+    "@radix-ui/react-slot": "^1.1.0",
+    "@types/node": "^22.5.1",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.1",
+    "autoprefixer": "^10.4.20",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.1.1",
+    "eslint": "^9.9.0",
+    "eslint-plugin-react-hooks": "^5.1.0-rc.0",
+    "eslint-plugin-react-refresh": "^0.4.9",
+    "globals": "^15.9.0",
+    "postcss": "^8.4.41",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-hook-form": "^7.53.0",
+    "tailwind-merge": "^2.5.2",
+    "tailwindcss": "^3.4.10",
+    "tailwindcss-animate": "^1.0.7",
+    "typescript": "^5.5.3",
+    "typescript-eslint": "^8.0.1",
+    "vite": "^5.4.1"
+  },
+  "packageManager": "yarn@4.9.1",
+  "files": [
+    "dist/library/**/*"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/library/index.d.ts",
+      "import": "./dist/library/index.js"
+    },
+    "./editor.css": {
+      "types": "./dist/library/editor-css.d.ts",
+      "default": "./dist/library/editor.css"
+    },
+    "./core": {
+      "types": "./dist/library/core.d.ts",
+      "import": "./dist/library/core.js"
+    },
+    "./code": {
+      "types": "./dist/library/code.d.ts",
+      "import": "./dist/library/code.js"
+    }
+  },
+  "peerDependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "description": "Responsive React rich text editor built on Lexical, with tables, code highlighting, and HTML and JSON output.",
+  "keywords": [
+    "react",
+    "lexical",
+    "rich-text-editor",
+    "wysiwyg",
+    "typescript"
+  ],
+  "types": "./dist/library/index.d.ts",
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  }
+}

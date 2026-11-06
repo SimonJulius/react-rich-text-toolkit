@@ -1,0 +1,72 @@
+name: Publish to npm
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+          package-manager-cache: false
+      - run: corepack enable
+      - run: yarn install --immutable
+      - run: yarn lint
+      - run: yarn test
+      - run: yarn build
+      - run: npm pack --dry-run
+
+  publish:
+    if: github.ref == 'refs/heads/main' && vars.NPM_PUBLISH_ENABLED == 'true'
+    needs: verify
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    concurrency:
+      group: npm-publish
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+          registry-url: https://registry.npmjs.org
+          package-manager-cache: false
+      - run: corepack enable
+      - run: yarn install --immutable
+      - name: Determine release version
+        id: release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          main_sha=$(gh api "repos/$GITHUB_REPOSITORY/git/ref/heads/main" --jq '.object.sha')
+          if [ "$main_sha" != "$GITHUB_SHA" ]; then
+            echo "A newer commit is already on main."
+            exit 0
+          fi
+
+          version=$(node .github/next-release.mjs)
+          if [ -n "$version" ]; then
+            echo "version=$version" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Publish public release
+        if: steps.release.outputs.version != ''
+        env:
+          RELEASE_VERSION: ${{ steps.release.outputs.version }}
+        run: |
+          npm version "$RELEASE_VERSION" --no-git-tag-version --allow-same-version
+          npm pkg set "gitHead=$GITHUB_SHA"
+          npm publish --access public
