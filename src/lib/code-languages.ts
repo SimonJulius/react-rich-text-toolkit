@@ -1,4 +1,3 @@
-// Initialize Prism before loading grammars, including when the package is imported in Node.
 import 'prismjs'
 import 'prismjs/components/prism-clike.js'
 import 'prismjs/components/prism-bash.js'

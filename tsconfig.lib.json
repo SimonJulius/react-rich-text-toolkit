@@ -7,5 +7,5 @@
     "rootDir": "src",
     "outDir": "dist/library"
   },
-  "include": ["src/index.ts", "src/code.ts", "src/editor-css.ts", "src/vite-env.d.ts"]
+  "include": ["src/index.ts", "src/code.ts", "src/editor-css.ts"]
 }

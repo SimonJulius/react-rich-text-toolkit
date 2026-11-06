@@ -23,7 +23,6 @@ export const editorHtml: HTMLConfig = {
     import: Object.fromEntries(Object.entries(TextNode.importDOM() ?? {}).filter(([tag]) => tag !== '#text').map(([tag, convert]) => [
         tag,
         (element: HTMLElement) => {
-            // Let CodeNode handle multiline code and its language metadata.
             if (tag === 'code' && (/[\r\n]/.test(element.textContent ?? '') || element.querySelector('br'))) return null
             const importer = convert(element)
             if (!importer) return null

@@ -23,7 +23,6 @@ function $getFence() {
     }
     if (!$isCodeNode(block)) return null
 
-    // Highlighting can split the fence across multiple tokens.
     const nodes = [anchor]
     let text = anchor.getTextContent()
     let previous = anchor.getPreviousSibling()
