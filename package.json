@@ -95,5 +95,6 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/SimonJulius/react-rich-text-toolkit.git"
-  }
+  },
+  "homepage": "https://github.com/SimonJulius/react-rich-text-toolkit"
 }
