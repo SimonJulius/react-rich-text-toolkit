@@ -44,6 +44,7 @@ export function NotesEditor() {
 
 - [Basic rich text editor](https://codesandbox.io/p/sandbox/jfjvss)
 - [Editor without a toolbar, with plain-text output](https://codesandbox.io/p/sandbox/hr6ljs)
+- [Chat composer with file uploads, emojis, and code blocks](https://codesandbox.io/p/sandbox/vvq2hp)
 
 ## TypeScript
 
@@ -394,16 +395,8 @@ yarn build:lib
 
 Use `npm pack --dry-run` to inspect what npm will publish. For a local install test, run `npm pack` and install the resulting archive in a separate React project. The pack step builds the library automatically with Yarn.
 
-Before the first public release, choose a license and sign in to npm with the publishing account. Run `npm publish` from this directory to publish the configured version.
+Sign in to npm with the publishing account. Run `npm publish` from this directory to publish the configured version.
 
-### Publish automatically from GitHub
+## License
 
-Create a GitHub repository and push the project to its `main` branch. The included workflow runs lint, tests, the demo build, and an npm package dry run on every push to `main`, including PR merges.
-
-1. Set `repository.url` in `package.json` to the GitHub repository URL so npm provenance can match the package to its source. Choose a license and publish the first version manually if the package is new.
-2. In the package settings on npm, add a GitHub Actions trusted publisher. Enter the GitHub owner and repository name, set the workflow filename to `publish.yml`, and allow direct `npm publish`. Leave the environment field empty.
-3. In GitHub, open **Settings → Secrets and variables → Actions → Variables** and set `NPM_PUBLISH_ENABLED` to `true`. From the **Actions** tab, you can run **Publish to npm** on `main` to verify the setup.
-
-Each eligible run increments the patch number from the npm `latest` version. For example, `0.1.0` becomes `0.1.1`. The version change happens on the runner, and npm records the release version. The workflow skips a commit already associated with the latest release and skips outdated runs when newer commits reach `main`. Several rapid merges can therefore ship together in one release.
-
-See the [npm trusted publishing guide](https://docs.npmjs.com/trusted-publishers/) for the account setup.
+Licensed under the [MIT License](LICENSE).
