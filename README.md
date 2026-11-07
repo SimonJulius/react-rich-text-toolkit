@@ -13,7 +13,7 @@ A responsive rich-text editor for React, powered by [Lexical](https://lexical.de
 
 ## Install
 
-Use React and React DOM 18.3.1 or a later compatible React 18 release. Install from npm once the package has been published.
+Use React and React DOM 18.3.1 or a later compatible React 18 release. Install the published package from npm.
 
 ```sh
 npm install react-rich-text-toolkit
@@ -39,6 +39,11 @@ export function NotesEditor() {
     )
 }
 ```
+
+## Interactive examples
+
+- [Basic rich text editor](https://codesandbox.io/p/sandbox/jfjvss)
+- [Editor without a toolbar, with plain-text output](https://codesandbox.io/p/sandbox/hr6ljs)
 
 ## TypeScript
 
@@ -208,7 +213,7 @@ export function ArticleBody({ error }: { error?: string }) {
 | `name` | Lexical namespace. Defaults to `RichTextEditor`. |
 | `nodes`, `children` | Register custom Lexical nodes at mount and render plugins inside the Lexical composer. |
 
-The exported `RichTextEditorRef` exposes `focus()`, `blur()`, `getSnapshot()`, and `getEditor()`. The last two return `null` when no editor is mounted. The package also exports `RichTextEditorProps`, `RichTextSnapshot`, and `RichTextChangeEvent`.
+The exported `RichTextEditorRef` exposes `formatText(format)`, `insertText(text)`, `focus()`, `blur()`, `getSnapshot()`, and `getEditor()`. The last two return `null` when no editor is mounted. The package also exports `RichTextEditorProps`, `RichTextSnapshot`, and `RichTextChangeEvent`.
 
 ## Customize the theme
 
@@ -278,34 +283,44 @@ Type three backticks to create a block in this example. Any custom toolbar or pl
 
 ### Add a custom toolbar
 
-Toolbar elements render inside Lexical's composer. They can dispatch commands using `useLexicalComposerContext`. If your app imports Lexical directly, install versions matching the editor package. This release uses Lexical 0.17.1.
+Use the editor ref to format the current selection and insert text or emojis. Custom controls need only React and this package. Prevent the button's mouse-down default to keep the editor selection when clicking a control.
 
 ```tsx
-import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext'
-import { FORMAT_TEXT_COMMAND } from 'lexical'
-import { EditorCore } from 'react-rich-text-toolkit/core'
+import { useRef } from 'react'
+import { RichTextEditor, type RichTextEditorRef } from 'react-rich-text-toolkit'
 import 'react-rich-text-toolkit/editor.css'
 
-function BoldControl() {
-    const [editor] = useLexicalComposerContext()
+export function CustomEditor() {
+    const editor = useRef<RichTextEditorRef>(null)
 
     return (
-        <button
-            type="button"
-            onMouseDown={event => event.preventDefault()}
-            onClick={() => editor.dispatchCommand(FORMAT_TEXT_COMMAND, 'bold')}
-        >
-            Bold
-        </button>
+        <RichTextEditor
+            ref={editor}
+            label="Message"
+            surfaceControls={null}
+            toolbar={
+                <div role="toolbar" aria-label="Message tools">
+                    <button type="button"
+                        onMouseDown={event => event.preventDefault()}
+                        onClick={() => editor.current?.formatText('bold')}>
+                        Bold
+                    </button>
+                    <button type="button"
+                        onMouseDown={event => event.preventDefault()}
+                        onClick={() => {
+                            editor.current?.insertText('😀')
+                            editor.current?.focus()
+                        }}>
+                        Insert emoji
+                    </button>
+                </div>
+            }
+        />
     )
-}
-
-export function CustomEditor() {
-    return <EditorCore label="Notes" toolbar={<BoldControl />} />
 }
 ```
 
-The mouse handler keeps the selection in the document when the button is clicked. Use the same composer context for plugin children that need to register commands or listen for updates.
+`formatText(format)` toggles `bold`, `italic`, `underline`, `strikethrough`, `code`, `highlight`, `subscript`, or `superscript`. `insertText(text)` replaces selected text or inserts at the cursor. With no selection, it appends at the document end. Both actions ignore calls while the editor is read-only or unmounted. These methods are also available on `EditorCore` refs.
 
 ## Editing tools
 

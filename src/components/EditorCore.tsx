@@ -7,6 +7,7 @@ import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin'
 import { ContentEditable } from '@lexical/react/LexicalContentEditable'
 import { LexicalErrorBoundary } from '@lexical/react/LexicalErrorBoundary'
 import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin'
+import { $getRoot, $getSelection, $isRangeSelection, FORMAT_TEXT_COMMAND } from 'lexical'
 import type { CreateEditorArgs, EditorThemeClasses, HTMLConfig, LexicalEditor, SerializedEditorState } from 'lexical'
 import { editorHtml } from '../lib/editor-html.js'
 import { editorTheme } from '../lib/editor-theme.js'
@@ -46,7 +47,11 @@ export interface EditorCoreProps {
     inputEvents?: EditorInputEvents
 }
 
+export type TextFormat = 'bold' | 'italic' | 'underline' | 'strikethrough' | 'code' | 'highlight' | 'subscript' | 'superscript'
+
 export interface RichTextEditorRef {
+    formatText: (format: TextFormat) => void
+    insertText: (text: string) => void
     focus: () => void
     blur: () => void
     getSnapshot: () => RichTextSnapshot | null
@@ -91,6 +96,19 @@ const EditorCore = forwardRef<RichTextEditorRef, EditorCoreProps>(function Edito
     }).current
 
     useImperativeHandle(ref, () => ({
+        formatText: format => {
+            const editor = editorRef.current
+            if (!editor?.isEditable()) return
+            editor.dispatchCommand(FORMAT_TEXT_COMMAND, format)
+        },
+        insertText: text => {
+            const editor = editorRef.current
+            if (!editor?.isEditable()) return
+            editor.update(() => {
+                const selection = $getSelection() ?? $getRoot().selectEnd()
+                if ($isRangeSelection(selection)) selection.insertText(text)
+            })
+        },
         focus: () => editorRef.current?.focus(),
         blur: () => editorRef.current?.getRootElement()?.blur(),
         getSnapshot: () => editorRef.current ? readSnapshot(editorRef.current) : null,
