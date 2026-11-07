@@ -1,3 +1,4 @@
+import { INSERT_CODE_BLOCK } from '../lib/editor-commands.js'
 import HtmlPastePlugin from '../plugins/HtmlPastePlugin.js'
 import { forwardRef, useImperativeHandle, useLayoutEffect, useRef } from 'react'
 import type { FocusEventHandler, HTMLAttributes, ReactNode } from 'react'
@@ -50,6 +51,7 @@ export interface EditorCoreProps {
 export type TextFormat = 'bold' | 'italic' | 'underline' | 'strikethrough' | 'code' | 'highlight' | 'subscript' | 'superscript'
 
 export interface RichTextEditorRef {
+    insertCodeBlock: (language?: string) => void
     formatText: (format: TextFormat) => void
     insertText: (text: string) => void
     focus: () => void
@@ -96,6 +98,11 @@ const EditorCore = forwardRef<RichTextEditorRef, EditorCoreProps>(function Edito
     }).current
 
     useImperativeHandle(ref, () => ({
+        insertCodeBlock: (language = 'plain') => {
+            const editor = editorRef.current
+            if (!editor?.isEditable()) return
+            editor.dispatchCommand(INSERT_CODE_BLOCK, language)
+        },
         formatText: format => {
             const editor = editorRef.current
             if (!editor?.isEditable()) return

@@ -320,6 +320,8 @@ export function CustomEditor() {
 }
 ```
 
+`insertCodeBlock(language?)` converts selected blocks to code, defaulting to plain text. It requires the full editor or `CodeEditingPlugin` with `codeNodes` in the core.
+
 `formatText(format)` toggles `bold`, `italic`, `underline`, `strikethrough`, `code`, `highlight`, `subscript`, or `superscript`. `insertText(text)` replaces selected text or inserts at the cursor. With no selection, it appends at the document end. Both actions ignore calls while the editor is read-only or unmounted. These methods are also available on `EditorCore` refs.
 
 ## Editing tools
